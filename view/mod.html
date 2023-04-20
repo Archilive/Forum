@@ -1,0 +1,45 @@
+<head>
+    <meta charset="utf-8">
+    <title>Forum de Mékouye</title>
+    <link rel="stylesheet" href="../view/style.css">
+    <link href="../assets/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="view/script.js"></script>
+</head>
+{{ $IsLogged := .IsLogged}}
+{{ $IdUser :=.User.Id}}
+{{ $IsMod := .User.IsMod}}
+
+<body>
+    <div class="header">
+        <a id="TitleF" class="h1" href="/">YFORUM</a>
+        {{ if $IsLogged}}
+        <div class="headerprofile">
+            <img class="imageprofile" src="Avatar/{{.User.Id}}.png" />
+            <a class="h2" id="headername"href=/profile/{{.User.Id}}>{{.User.Username}}</h2>
+        </div>
+        {{end}}
+        <div class="headerbouton">
+            <a href="/" class="btn btn-secondary">Home</a>
+            {{ if .User.IsAdmin}}
+            <a href="/admin" class="btn btn-primary">Admin</a>
+            {{end}}
+
+            <a href="/setting" class="btn btn-outline-warning">Setting</a>
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+    <form action="/requestMod" method="POST" class="background-bleu m-3 p-3">
+        <div class="form-group">
+            <label class="mt-3" for="exampleFormControlTextarea1">
+                <h6>Justify your motivation</h6>
+            </label>
+            <textarea name="Reason" class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+            <div class="boutonsubmit">
+                <button type="submit" class="btn btn-outline-Success active mt-2">Valider</button>
+            </div>
+
+        </div>
+    </form>
+</body>

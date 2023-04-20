@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Forum de Mékouye</title>
+    <link rel="stylesheet" href="./view/style.css">
+    <link href="./assets/favicon.ico" rel="icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+
+</head>
+{{ $IsLogged := .IsLogged}}
+{{ $IsMod := .User.IsMod}}
+{{ $User_id := .User.Id}}
+{{ $Categorie := .Categorie}}
+{{ $AllCategorie := "All"}}
+
+<body id="Body">
+    <div class="header">
+        <a id="TitleF" class="h1" href="/">YFORUM</a>
+        {{ if $IsLogged}}
+        <div class="headerprofile">
+            <img class="imageprofile" src="Avatar/{{.User.Id}}.png" />
+            <a class="h2" id="headername"href=/profile/{{.User.Id}}>{{.User.Username}}</h2>
+        </div>
+        {{end}}
+        <div class="headerbouton">
+            <a href="/" class="btn btn-outline-secondary active">Home</a>
+            {{ if .User.IsAdmin}}
+            <a href="/admin" class="btn btn-outline-primary">Admin</a>
+            {{end}}
+            {{if $IsLogged}}
+            <a href="/setting" class="btn btn-outline-warning">Setting</a>
+            <a href="/logout" class="btn btn-danger">Logout</a>
+            {{ else }}
+            <button onclick="login()" class="btn btn-outline-success">Login</button>
+            <button onclick="hidesignup()" class="btn btn-info">Register</button>
+            {{end}}
+        </div>
+    </div>
+    <div class="overlay hide" id="login-overlay">
+        <div id="hideoverlay" onclick="login()"></div>
+        <form method="post" autocomplete="off" action="/login" class="login" id="login">
+            <div class="form-group">
+                <label for="username">Username :</label>
+                <input name="Username" id="username" type="text" class="form-control" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password :</label>
+                <input name="Password" id="Password-login" type="password" minlength="6" maxlength="30" class="form-control"
+                    placeholder="Yourpassword">
+            </div>
+            <p id="login_text" style="color: red; font-size: 70%;"></p>
+            <button type="button" class="btn btn-success" onclick="Login_check()" id="btn-login">Login</button>
+        </form>
+    </div>
+    <div class="overlay hide" id="signup-overlay">
+        <div id="hideoverlay" onclick="hidesignup()"></div>
+        <form method="post" enctype="multipart/form-data" autocomplete="off" action="/register" class="signup">
+            <div class="avatar-upload">
+                <div class="avatar-edit">
+                    <input type='file' name="myAvatar" id="imageUpload" accept=".png, .jpg, .jpeg"/>
+                    <label for="imageUpload"></label>
+                </div>
+                <div class="avatar-preview">
+                    <div id="imagePreview" style="background-image: url(../Avatar/default.png)">
+                    </div>
+                </div>
+            </div>
+            <p id="register-text" style="color: red;"></p>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputUsername">Username</label>
+                    <input name="Username" id="inputUsername" type="text" class="form-control"
+                        placeholder="Enter username">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputEmail">Email</label>
+                    <input name="Email" id="email" type="email" class="form-control" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password :</label>
+                <input name="Password" id="Password-register" type="password" minlength="4" maxlength="30" class="form-control"
+                    placeholder="Your password">
+                <input type="password" minlength="4" maxlength="30" name="confirm_password"
+                    placeholder="Confirm your password" id="confirm_password" class="form-control mt-1" />
+            </div>
+            <button type="button" class="btn btn-success" onclick="RegisterCheck()">Register</button>
+        </form>
+    </div>
+    {{if .Categories}}
+    <div class="nav-scroller p-1 ">
+        <nav class="nav d-flex justify-content-between">
+            <form method="GET" action="/">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary {{ if eq $Categorie $AllCategorie }}
+                    active {{end}}">
+                        <input onclick="this.form.submit()" type="radio" name="Categorie" {{ if eq $Categorie $AllCategorie }}
+                        checked {{end}} value="All">
+                        All
+                    </label>
+                    {{range .Categories}}
+                    <label class="btn btn-secondary {{ if eq $Categorie .Name }}
+                    active {{end}}">
+                        <input onclick="this.form.submit()" type="radio" name="Categorie" {{ if eq $Categorie .Name }}
+                            checked {{end}} value="{{.Name}}">
+                        {{.Name}}
+                    </label>
+                    {{end}}
+                </div>
+                <label>
+                    Filter :
+                </label>
+                <select id="filter" name="Filter" onchange="this.form.submit()">
+                    <option value="" selected>Select</option>
+                    <option value="Like" {{ if eq .Filter "Like" }}selected{{end}}>Like</option>
+                    <option value="DisLike" {{ if eq .Filter "DisLike" }}selected{{end}}>DisLike</option>
+                    <option value="Comments" {{ if eq .Filter "Comments" }}selected{{end}}>Comments</option>
+                    <option value="Date" {{ if eq .Filter "Date" }}selected{{end}}>Date</option>
+                </select>
+                <label>
+                    Order :
+                </label>
+                <select name="Type" onchange="this.form.submit()">
+                    <option value="Descending" {{ if eq .Order "Descending" }}selected{{end}}>Descending</option>
+                    <option value="Ascending" {{ if eq .Order "Ascending" }}selected{{end}}>Ascending</option>
+                </select>
+            </form>
+        </nav>
+    </div>
+    {{end}}
+    <div class="content">
+        {{if .Posts}}
+        <table class="table table-borderless">
+            <thead>
+                <tr class="table-info">
+                    <th scope="col">Posts</th>
+                    <th scope="col">Write by</th>
+                    <th scope="col">Comments</th>
+                    <th scope="col">Updated</th>
+                    <th scope="col">Like</th>
+                    <th scope="col">DisLike</th>
+                    {{if $IsMod}}
+                    <th scope="col">Report</th>
+                    {{end}}
+                    {{range .Posts}}
+                    {{if eq $User_id .User_id}}
+                    <th scope="col">Edit</th>
+                    {{break}}
+                    {{end}}
+                    {{end}}
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Posts}}
+                <tr class="posts" style="background-color: #EDF6F9;">
+                    <td scope="row"><a href="/post/{{.Id}}">{{.Title}}</a></td>
+                    <td><a href="/profile/{{.User_id}}">{{.Username}}</a></td>
+                    <td>{{.NbrComments}}</td>
+                    <td>{{.StrUpdatedAt}}</td>
+                    <td>
+                        <p id="like{{.Id}}">{{.LikeCount}}</p>{{if $IsLogged}}<button id="btn-like{{.Id}}" type="button"
+                            class="btn btn-outline-success {{if .IsLiked}} active {{end}} size" name="type"
+                            onclick="handleLike(`LikePost`,`{{.Id}}`)">Like</button>{{end}}
+                    </td>
+                    <td>
+                        <p id="dislike{{.Id}}">{{.DisLikeCount}}</p>{{if $IsLogged}}<button type="button"
+                            class="btn btn-outline-danger {{if .IsDisLiked}} active {{end}} size"
+                            id="btn-dislike{{.Id}}" name="type"
+                            onclick="handleDislike(`LikePost`,`{{.Id}}`)">Dislike</button>
+                        {{end}}
+                    </td>
+                    {{if $IsMod}}
+                    <td>
+                        <form action="/report" method="POST">
+                            <p></p>
+                            <input type="hidden" name="table" value="ReportPost" />
+                            <input type="hidden" name="id" value="{{.Id}}" />
+                            <button class="btn btn-outline-warning" type="submit">Report</button>
+                        </form>
+                    </td>
+                    {{end}}
+                    {{if eq $User_id .User_id}}
+                    <td>
+                        <a href="edit/{{.Id}}" class="btn btn-outline-warning active">Edit</a>
+                    </td>
+                    {{end}}
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{end}}
+    </div>
+    <div class="bouton">
+        <a href="/createPost" class="btn btn-info">Create a
+            Post</a>
+        <a href="/requestMod" class="btn btn-info">Join US</a>
+    </div>
+    <script src="view/script.js"></script>
+    <script src="view/img.js"></script>
+</body>
+
+</html>

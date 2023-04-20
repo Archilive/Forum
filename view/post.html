@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Forum de Mékouye</title>
+    <link href="../assets/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="../view/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+</head>
+{{ $IsLogged := .IsLogged}}
+{{ $IdUser :=.User.Id}}
+{{ $IsMod := .User.IsMod}}
+
+<body id="Body">
+    <div class="header">
+        <a id="TitleF" class="h1" href="/">YFORUM</a>
+        {{ if $IsLogged}}
+        <div class="headerprofile">
+            <img class="imageprofile" src="../Avatar/{{.User.Id}}.png" />
+            <a class="h2" id="headername" href=/profile/{{.User.Id}}>{{.User.Username}}</h2>
+        </div>
+        {{end}}
+        <div class="headerbouton">
+            <a href="/" class="btn btn-outline-secondary active">Home</a>
+            {{ if .User.IsAdmin}}
+            <a href="/admin" class="btn btn-outline-primary">Admin</a>
+            {{end}}
+            {{if $IsLogged}}
+            <a href="/setting" class="btn btn-outline-warning">Setting</a>
+            <a href="/logout" class="btn btn-danger">Logout</a>
+            {{ else }}
+            <button onclick="login()" class="btn btn-outline-success">Login</button>
+            <button onclick="hidesignup()" class="btn btn-info">Register</button>
+            {{end}}
+        </div>
+    </div>
+    <div class="overlay hide" id="login-overlay">
+        <div id="hideoverlay" onclick="login()"></div>
+        <form method="post" autocomplete="off" action="/login" class="login" id="login">
+            <div class="form-group">
+                <label for="username">Username :</label>
+                <input name="Username" id="username" type="text" class="form-control" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password :</label>
+                <input name="Password" id="Password-login" type="password" minlength="6" maxlength="30"
+                    class="form-control" placeholder="Yourpassword">
+            </div>
+            <p id="login_text" style="color: red; font-size: 70%;"></p>
+            <button type="button" class="btn btn-success" onclick="Login_check()" id="btn-login">Login</button>
+        </form>
+    </div>
+    <div class="overlay hide" id="signup-overlay">
+        <div id="hideoverlay" onclick="hidesignup()"></div>
+        <form method="post" enctype="multipart/form-data" autocomplete="off" action="/register" class="signup">
+            <div class="avatar-upload">
+                <div class="avatar-edit">
+                    <input type='file' name="myAvatar" id="imageUpload" accept=".png, .jpg, .jpeg" />
+                    <label for="imageUpload"></label>
+                </div>
+                <div class="avatar-preview">
+                    <div id="imagePreview" style="background-image: url(../Avatar/default.png)">
+                    </div>
+                </div>
+            </div>
+            <p id="register-text" style="color: red;"></p>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputUsername">Username</label>
+                    <input name="Username" id="inputUsername" type="text" class="form-control"
+                        placeholder="Enter username">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputEmail">Email</label>
+                    <input name="Email" id="email" type="email" class="form-control" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password :</label>
+                <input name="Password" id="Password-register" type="password" minlength="4" maxlength="30"
+                    class="form-control" placeholder="Your password">
+                <input type="password" minlength="4" maxlength="30" name="confirm_password"
+                    placeholder="Confirm your password" id="confirm_password" class="form-control mt-1" />
+            </div>
+            <button type="button" class="btn btn-success" onclick="RegisterCheck()">Register</button>
+        </form>
+    </div>
+    <div class="content">
+        <div class="media">
+            <figure class="background-blanc" style="background-color:white;">
+                <img class="imagepost" src="../Avatar/{{.Post.User_id}}.png">
+                <figcaption class="background-blanc"><a href="/profile/{{.Post.User_id}}">{{.Post.Username}}</a>
+                </figcaption>
+            </figure>
+            <div class="media-body" style="margin:15px;">
+                <div class="post">
+                    <h3 class="mt-0">{{.Post.Title}} {{range .Post.Categories}}<span
+                            class="badge bg-secondary mr-2">{{.Name}}</span>{{end}}</h3>
+                    <h6>{{.Post.Text}}</h6>
+                </div>
+                {{range .Comments}}
+                <div class="media mt-3" style="background-color:white;">
+                    <figure class="background-blanc" style="background-color:white;">
+                        <img class="imagecomment" src="../Avatar/{{.User_id}}.png">
+                        <figcaption class="background-blanc"><a href="/profile/{{.User_id}}">{{.Username}}</a>
+                        </figcaption>
+                    </figure>
+                    <div class="media-body" style="margin-left:15px;">
+                        <h5>Commented at {{.StrCreatedAt}}</h5>
+                        <div class="media mt-3" style="background-color:white;">
+                            <p>{{.Text}}</p>
+                            <div class="media-body mr-3 text-end" style="text-align:end">
+                                <div>
+                                    {{if $IsLogged}}<button type="button"
+                                        class="btn btn-outline-success {{if .IsLiked}} active {{end}}" name="type"
+                                        onclick="handleLike(`LikeComment`,`{{.Id}}`)"
+                                        id="btn-like{{.Id}}">Like</button>{{else}}
+                                    Like :{{end}}<p id="like{{.Id}}"> {{.LikeCount}}</p>
+                                </div>
+                                <div>
+                                    {{if $IsLogged}}<button type="button"
+                                        class="mt-3 btn btn-outline-danger {{if .IsDisLiked}} active {{end}}"
+                                        name="type" onclick="handleDislike(`LikeComment`,`{{.Id}}`)"
+                                        id="btn-dislike{{.Id}}">Dislike</button>{{else}}
+                                    DisLike :{{end}}<p id="dislike{{.Id}}"> {{.DisLikeCount}}</p>
+                                </div>
+                                {{if $IsMod}}
+                                <form action="/report" method="POST">
+                                    <input type="hidden" name="table" value="ReportComment" />
+                                    <input type="hidden" name="id" value="{{.Id}}" />
+                                    <button class="btn btn-outline-warning" type="submit">Report</button>
+                                </form>
+                                {{end}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+                {{ if $IsLogged}}
+                <div class="media-body">
+                    <form action="/createComment" method="post" class=" m-3 p-3">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">
+                                <h5>Write a Comment</h5>
+                            </label>
+                            <textarea name="Text" class="form-control" id="exampleFormControlTextarea1"
+                                rows="3"></textarea>
+                            <input type="hidden" name="Id" value="{{.Post.Id}}">
+                            <div class="boutonsubmit">
+                                <button type="submit" class="btn btn-outline-success active mt-2">Valider</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {{end}}
+            </div>
+        </div>
+        <script src="../view/script.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</body>
+
+</html>

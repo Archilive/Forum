@@ -1,0 +1,52 @@
+<head>
+    <meta charset="utf-8">
+    <title>Forum de Mékouye</title>
+    <link href="../assets/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="../view/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="view/script.js"></script>
+</head>
+{{ $IsLogged := .IsLogged}}
+{{ $IdUser :=.User.Id}}
+{{ $IsMod := .User.IsMod}}
+
+<body>
+    <div class="header">
+        <a id="TitleF" class="h1" href="/">YFORUM</a>
+        {{ if $IsLogged}}
+        <div class="headerprofile">
+            <img class="imageprofile" src="../Avatar/{{.User.Id}}.png" />
+            <a class="h2" id="headername"href=/profile/{{.User.Id}}>{{.User.Username}}</h2>
+        </div>
+        {{end}}
+        <div class="headerbouton">
+            <a href="/" class="btn  btn-outline-secondary active">Home</a>
+            {{ if .User.IsAdmin}}
+            <a href="/admin" class="btn btn-primary">Admin</a>
+            {{end}}
+            <a href="/setting" class="btn btn-outline-warning">Setting</a>
+            <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
+    <form action="/createPost" method="post" class="background-bleu m-3 p-3">
+        <div class="form-group">
+            <h5>Title</h5>
+            <input name="Title" type="text" class="form-control" placeholder="PostTitle">
+            <h6 class="mt-3">Content</h6>
+            <textarea name="Text" class="form-control" rows="10"></textarea>
+            {{ if .Categories}}
+            <h5 class="mt-4">Categories</h5>
+            {{range .Categories}}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="Categorie" value="{{.Id}}">
+                <label class="form-check-label">{{.Name}}</label>
+            </div>
+            {{end}}
+            {{end}}
+            <div class="bouton">
+                <button type="submit" class="btn btn-outline-success active mt-2">Valider</button>
+            </div>
+        </div>
+    </form>
+</body>

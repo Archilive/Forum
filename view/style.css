@@ -1,0 +1,272 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: white;
+}
+
+body {
+  background-color: #83c5be;
+  font-family: sans-serif;
+}
+
+.header {
+  background-color: #006d77;
+  height: 4rem;
+}
+
+.headerprofile {
+  background-color: #1d8c96;
+  display: flex;
+  align-items: row;
+  position: absolute;
+  top: 10px;
+  left: 5px;
+  width: 20%;
+  height: 3rem;
+  border-radius: 1rem;
+}
+
+.headerbouton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.imageprofile {
+  position: relative;
+  top: 0;
+  height: 3rem;
+  margin-right: 10px;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+.content {
+  margin: 20px;
+  background-color: #edf6f9;
+}
+
+figcaption {
+  padding: 3px;
+  text-align: center;
+}
+
+figure {
+  border: thin #c0c0c0 solid;
+  display: flex;
+  flex-flow: column;
+  padding: 15px;
+  margin-bottom: 1px;
+}
+
+.background-bleu {
+  background-color: #83c5be;
+}
+.background-blanc {
+  background-color: white;
+}
+.imagepost {
+  height: 124px;
+}
+
+.imagecomment {
+  height: 80px;
+}
+
+.post {
+  padding-bottom: 30px;
+}
+
+.bouton {
+  position: relative;
+  bottom: 0;
+  width: auto;
+  text-align: center;
+}
+
+*:focus {
+  outline: none;
+}
+
+.box {
+  box-sizing: border-box;
+  width: 500px;
+  height: 850px;
+  border: 2px solid #006d77;
+  box-shadow: -3px -3px 7px #ffffff73, 3px 3px 5px rgba(94, 104, 121, 0.288);
+  border-radius: 5px;
+  background-color: #83c5be;
+  margin-top: 50px;
+  overflow: hidden;
+  transition: all 1s;
+}
+
+.overlay {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  background-color: #00000090;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 3;
+}
+
+#hideoverlay {
+  z-index: 3;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+}
+
+.hide {
+  display: none;
+}
+
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: large;
+  background-color: #fff;
+  border-radius: 2rem;
+  width: 30%;
+  height: 50%;
+  z-index: 4;
+  color: black;
+  opacity: 100;
+  transition: opacity 1s;
+}
+
+
+.signup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: large;
+  background-color: #ffff;
+  border-radius: 2rem;
+  width: 40%;
+  height: 80%;
+  z-index: 4;
+  color: black;
+}
+
+.settingPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 65px;
+  font-size: large;
+  background-color: #ffddd2;
+  border-radius: 2rem;
+  width: 40%;
+  height: 80%;
+  color: black;
+  margin-top: 7vh;
+  padding-bottom: 100px;
+  padding-top: 100px;
+}
+
+.import_image {
+  width: 30%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar-upload {
+  position: relative;
+  max-width: 205px;
+}
+
+.avatar-upload .avatar-edit {
+  position: absolute;
+  right: 12px;
+  z-index: 1;
+  top: 10px;
+}
+
+.avatar-upload .avatar-edit input {
+  display: none;
+}
+
+.avatar-upload .avatar-edit input + label {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 0;
+  border-radius: 100%;
+  background: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  font-weight: normal;
+  transition: all 0.2s ease-in-out;
+}
+
+.avatar-upload .avatar-edit input + label:hover {
+  background: #f1f1f1;
+  border-color: #d6d6d6;
+}
+
+.avatar-upload .avatar-edit input + label:after {
+  content: "\f040";
+  color: #757575;
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: auto;
+}
+
+.avatar-upload .avatar-preview {
+  width: 192px;
+  height: 192px;
+  position: relative;
+  border-radius: 100%;
+  border: 6px solid #f8f8f8;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-upload .avatar-preview > div {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#headername {
+  color: black;
+  text-decoration: none;
+}
+
+#TitleF {
+  position: relative;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  left: 45%;
+}
+
+figure {
+  border-top: none;
+  border-left: none;
+}

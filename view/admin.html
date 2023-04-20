@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Forum de Mékouye</title>
+    <link href="./assets/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="./view/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="view/script.js"></script>
+</head>
+{{ $IsLogged := .IsLogged}}
+{{ $IsMod := .User.IsMod}}
+{{ $User_id := .User.Id}}
+
+<body>
+    <div class="header">
+        <a id="TitleF" class="h1" href="/">YFORUM</a>
+        {{ if $IsLogged}}
+        <div class="headerprofile">
+            <img class="imageprofile" src="Avatar/{{.User.Id}}.png" />
+            <a class="h2" id="headername" href=/profile/{{.User.Id}}>{{.User.Username}}</h2>
+        </div>
+        {{end}}
+        <div class="headerbouton">
+            <a href="/" class="btn btn-outline-secondary">Home</a>
+            <a href="/admin" class="btn btn-primary">Admin</a>
+            <a href="/setting" class="btn btn-outline-warning">Setting</a>
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+    <div class="content">
+        {{if .ReportInfo.ReportPosts}}
+        <table class="table table-borderless">
+            <thead>
+                <tr class="table-info">
+                    <th scope="col">ReportedPosts</th>
+                    <th scope="col">Created by</th>
+                    <th scope="col">Comments</th>
+                    <th scope="col">Updated</th>
+                    <th scope="col">Cancel</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .ReportInfo.ReportPosts}}
+                <tr style="background-color: #EDF6F9;">
+                    <td scope="row"><a href="/post/{{.Id}}">{{.Title}}</a></td>
+                    <td><a href="/profile/{{.User_id}}">{{.Username}}</a></td>
+                    <td>{{.NbrComments}}</td>
+                    <td>{{.StrUpdatedAt}}</td>
+                    <td>
+                        <form action="/admin" method="POST">
+                            <input type="hidden" name="type" value="Post">
+                            <input type="hidden" name="action" value="ANNULER">
+                            <input type="hidden" name="id" value="{{.Id}}">
+                            <button type="submit" class="btn btn-outline-secondary active">Cancel</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/admin" method="POST">
+                            <input type="hidden" name="type" value="Post">
+                            <input type="hidden" name="action" value="SUPPRIMER">
+                            <input type="hidden" name="id" value="{{.Id}}">
+                            <button type="submit" class="btn btn-outline-danger active">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{end}}
+        {{if .ReportInfo.ReportComments}}
+        <table class="table table-borderless">
+            <thead>
+                <tr class="table-info">
+                    <th scope="col">Post</th>
+                    <th scope="col">ReportedComment</th>
+                    <th scope="col">Write by</th>
+                    <th scope="col">CreatedAt</th>
+                    <th scope="col">Cancel</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .ReportInfo.ReportComments}}
+                <tr style="background-color: #EDF6F9;">
+                    <td scope="row"><a href="/post/{{.Post_id}}">Link to Post</a></td>
+                    <td>{{.Text}}</td>
+                    <td><a href="/profile/{{.User_id}}">{{.Username}}</a></td>
+                    <td>{{.StrCreatedAt}}</td>
+                    <td>
+                        <form action="/admin" method="POST">
+                            <input type="hidden" name="type" value="Comment">
+                            <input type="hidden" name="action" value="ANNULER">
+                            <input type="hidden" name="id" value="{{.Id}}">
+                            <button type="submit" class="btn btn-outline-secondary active">Cancel</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/admin" method="POST">
+                            <input type="hidden" name="type" value="Comment">
+                            <input type="hidden" name="action" value="SUPPRIMER">
+                            <input type="hidden" name="id" value="{{.Id}}">
+                            <button type="submit" class="btn btn-outline-danger active">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{end}}
+        {{if .RequestMod}}
+        <table class="table table-borderless">
+            <thead>
+                <tr class="table-info">
+                    <th scope="col">Username</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Approve</th>
+                    <th scope="col">Denied</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .RequestMod}}
+                <tr style="background-color: #EDF6F9;">
+                    <td>{{.Username}}</td>
+                    <td>{{.Reason}}</td>
+                    <td>
+                        <form action="/acceptMod" method="POST">
+                            <input type="hidden" name="action" value="accept">
+                            <input type="hidden" name="username" value="{{.Username}}">
+                            <button type="submit" class="btn btn-outline-secondary active">Accept</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/acceptMod" method="POST">
+                            <input type="hidden" name="action" value="denied">
+                            <input type="hidden" name="username" value="{{.Username}}">
+                            <button type="submit" class="btn btn-outline-danger active">Denied</button>
+                        </form>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{end}}
+    </div>
+    <div class="bouton">
+        <a href="/createCategorie" class="btn btn-info">Create a categorie</a>
+    </div>
+</body>
+
+</html>
